@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Storage;
-use Image;
 use Carbon\Carbon;
+use File;
 
 class BannerController extends Controller
 {
@@ -47,32 +45,24 @@ class BannerController extends Controller
         //     ' description'    => 'required',
         //      'image'          => 'required',
         // ]);
-
-            $image = $request->file('image');
-            $slug  = Str::slug($request->title);
-         
-          if (isset($image))
-        {
-           //  make unique name for image
-            $currentDate = Carbon::now()->toDateString();
-            $imagename = $slug.'-'.$currentDate.'-'.uniqid().'.'.$image->getClientOriginalExtension();
-           //    check banner dir is exists
-            if (!Storage::disk('public')->exists('banner'))
-            {
-                Storage::disk('public')->makeDirectory('banner');
-            }
-         //  resize image for banner and upload
         
-            Image::make($image)->resize(1920, 1080)->save(storage_path('app/public/banner').'/'.$imagename);
-
-        }
-
 
         $banner = new Banner();
-        $banner->image       = $imagename;
         $banner->sub_title   = $request->sub_title;
         $banner->title       = $request->title;
         $banner->description = $request->description;
+
+
+           if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $extension = $file->getClientOriginalExtension();
+                $filename = time().".".$extension;
+                $file->move('uploads/banner/',$filename);
+                $banner->image = $filename;
+
+            }
+
+
         $banner->save();
 
         notify()->success("Banner Added", "Success");
@@ -87,7 +77,7 @@ class BannerController extends Controller
      */
     public function show(Banner $banner)
     {
-        //
+        //  
     }
 
     /**
@@ -116,40 +106,26 @@ class BannerController extends Controller
         //     ' description'    => 'required',
         //      'image'          => 'required',
         // ]);
-
-            $image = $request->file('image');
-            $slug  =  $slug = Str::slug($request->title);
-         
-          if (isset($image))
-        {
-           //  make unique name for image
-            $currentDate = Carbon::now()->toDateString();
-            $imagename = $slug.'-'.$currentDate.'-'.uniqid().'.'.$image->getClientOriginalExtension();
-           //    check banner dir is exists
-            if (!Storage::disk('public')->exists('banner'))
-            {
-                Storage::disk('public')->makeDirectory('banner');
-            }
-
-              //  delete old image for banner
-
-            if (Storage::disk('public')->exists('banner/'.$banner->image)) {
-                Storage::disk('public')->delete('banner/'.$banner->image);
-            }
-
-
-         //  resize image for banner and upload
+        // 
         
-            Image::make($image)->resize(1920, 1080)->save(storage_path('app/public/banner').'/'.$imagename);
-
-        }else{
-            $imagename = $banner->image;
-        }
-
-        $banner->image       = $imagename;
         $banner->sub_title   = $request->sub_title;
         $banner->title       = $request->title;
         $banner->description = $request->description;
+
+           if ($request->hasFile('image')) {
+
+            $image_path = 'uploads/banner/'.$banner->image;
+                if (File::exists($image_path)) {
+                    File::delete($image_path);
+                }
+                $file = $request->file('image');
+                $extension = $file->getClientOriginalExtension();
+                $filename = time().".".$extension;
+                $file->move('uploads/banner/',$filename);
+                $banner->image = $filename;
+
+            }
+ 
         $banner->save();
 
         notify()->success("Banner Updated", "Success");
@@ -164,10 +140,12 @@ class BannerController extends Controller
      */
     public function destroy(Banner $banner)
     {
-        if (Storage::disk('public')->exists('banner/'.$banner->image)) {
-                Storage::disk('public')->delete('banner/'.$banner->image);
-            }
-            
+         $image_path = 'uploads/banner/'.$banner->image;
+                if (File::exists($image_path)) {
+                    File::delete($image_path);
+                }
+
+
         $banner->delete();
         notify()->success('Banner Deleted', "Success");
         return redirect()->back();

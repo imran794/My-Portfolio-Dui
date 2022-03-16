@@ -52,7 +52,7 @@
                                     @foreach($portfolios as $key=>$portfolio)
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
-                                            <td> <img width="100" src="{{ Storage::disk('public')->url('portfolio/'.$portfolio->portfolio_image) }}" alt="image"></td>
+                                            <td> <img width="100" src="{{ asset('uploads/portfolio/'.$portfolio->portfolio_image) }}" alt="image"></td>
                                             <td>{{ $portfolio->portfolio_title }}</td>
                                             <td>{{ $portfolio->portfolio_sub_title }}</td>  
                                             <td>{{ $portfolio->created_at->diffForHumans() }}</td>   

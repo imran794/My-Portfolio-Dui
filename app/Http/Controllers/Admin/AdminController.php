@@ -13,12 +13,10 @@ use App\Models\User;
 class AdminController extends Controller
 {
     public function index(){
-        $category = Category::count();
-        $servicess = Services::count();
         $portfolio = Portfolio::count();
         $contacts = Contact::count();
         $user = User::count();
 
-        return view('admin.home',compact('category','servicess','portfolio','contacts','user'));
+        return view('admin.home',compact('portfolio','contacts','user'));
     }
 }

@@ -47,32 +47,22 @@ class PortfolioController extends Controller
         //     ' portfolio_title'      => 'required',
         //      'portfolio_sub_title'  => 'required',
         // ]);
-
-            $image = $request->file('portfolio_image');
-            $slug  =  $slug = Str::slug($request->portfolio_title);
-         
-          if (isset($image))
-        {
-           //  make unique name for image
-            $currentDate = Carbon::now()->toDateString();
-            $imagename = $slug.'-'.$currentDate.'-'.uniqid().'.'.$image->getClientOriginalExtension();
-           //    check portfolio dir is exists
-            if (!Storage::disk('public')->exists('portfolio'))
-            {
-                Storage::disk('public')->makeDirectory('portfolio');
-            }
-         //  resize image for portfolio and upload
-        
-            Image::make($image)->resize(540, 336)->save(storage_path('app/public/portfolio').'/'.$imagename);
-
-        }
-
-
-        $portfolio = new Portfolio();
-        $portfolio->portfolio_image       = $imagename;
+        // 
+     
+         $portfolio = new Portfolio();
         $portfolio->portfolio_title       = $request->portfolio_title;
         $portfolio->portfolio_sub_title   = $request->portfolio_sub_title;
-        $portfolio->url                   = $request->url;
+        $portfolio->url          = $request->url;
+
+          if ($request->hasFile('portfolio_image')) {
+                $file = $request->file('portfolio_image');
+                $extension = $file->getClientOriginalExtension();
+                $filename = time().".".$extension;
+                $file->move('uploads/portfolio/',$filename);
+                $portfolio->portfolio_image = $filename;
+
+            }
+ 
         $portfolio->save();
 
         notify()->success("Portfolio Added", "Success");
@@ -117,41 +107,26 @@ class PortfolioController extends Controller
         //      'portfolio_sub_title'  => 'required',
         // ]);
 
-            $image = $request->file('portfolio_image');
-            $slug  =  $slug = Str::slug($request->portfolio_title);
-         
-          if (isset($image))
-        {
-           //  make unique name for image
-            $currentDate = Carbon::now()->toDateString();
-            $imagename = $slug.'-'.$currentDate.'-'.uniqid().'.'.$image->getClientOriginalExtension();
-
-           //    check portfolio dir is exists
-            if (!Storage::disk('public')->exists('portfolio'))
-            {
-                Storage::disk('public')->makeDirectory('portfolio');
-            }
-
-            // image delete for portfolio
-
-             if (Storage::disk('public')->exists('portfolio/'.$portfolio->portfolio_image)) {
-                Storage::disk('public')->delete('portfolio/'.$portfolio->portfolio_image);
-            }
-
-
-         //  resize image for portfolio and upload
-        
-            Image::make($image)->resize(540, 336)->save(storage_path('app/public/portfolio').'/'.$imagename);
-
-        }else{
-            $imagename = $portfolio->portfolio_image;
-
-        }
-
-        $portfolio->portfolio_image       = $imagename;
+   
         $portfolio->portfolio_title       = $request->portfolio_title;
         $portfolio->portfolio_sub_title   = $request->portfolio_sub_title;
         $portfolio->url                   = $request->url;
+
+        if ($request->hasFile('portfolio_image')) {
+
+            $image_path = 'uploads/portfolio/'.$portfolio->image;
+                if (File::exists($image_path)) {
+                    File::delete($image_path);
+                }
+
+
+                $file = $request->file('portfolio_image');
+                $extension = $file->getClientOriginalExtension();
+                $filename = time().".".$extension;
+                $file->move('uploads/portfolio/',$filename);
+                $portfolio->portfolio_image = $filename;
+
+            }
         $portfolio->save();
 
         notify()->success("Portfolio Updated", "Success");
@@ -166,9 +141,10 @@ class PortfolioController extends Controller
      */
     public function destroy(Portfolio $portfolio)
     {
-       if (Storage::disk('public')->exists('portfolio/'.$portfolio->portfolio_image)) {
-                Storage::disk('public')->delete('portfolio/'.$portfolio->portfolio_image);
-            }
+      $image_path = 'uploads/portfolio/'.$portfolio->image;
+                if (File::exists($image_path)) {
+                    File::delete($image_path);
+                }
 
        $portfolio->delete();
         notify()->success("Portfolio Deleted", "Success");

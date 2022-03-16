@@ -55,7 +55,7 @@
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
                                              <td>
-                                          <img width="100" src="{{ Storage::disk('public')->url('banner/'.$banner->image) }}" alt="image">
+                                          <img width="100" src="{{ asset('uploads/banner/'.$banner->image) }}" alt="image">
                                            </td>
                                             <td>{{ Str::limit($banner->title,10) }}</td>
                                             <td>{{ Str::limit($banner->sub_title,10) }}</td>

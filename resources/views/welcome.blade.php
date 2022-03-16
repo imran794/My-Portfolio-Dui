@@ -11,10 +11,11 @@
 @section('content')
 
 
-<section class="home">
+@if ($banner)
+    <section class="home">
 
     <div class="image">
-        <img src="{{ Storage::disk('public')->url('banner/'.$banner->image) }}" alt="$banner->image">
+        <img src="{{ asset('uploads/banner/'.$banner->image) }}" alt="$banner->image">
     </div>
 
     <div class="content">
@@ -25,6 +26,7 @@
     </div>
 
 </section>
+@endif
 
 <!-- home section ends -->
 

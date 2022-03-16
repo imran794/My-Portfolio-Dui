@@ -17,7 +17,7 @@
 
         @foreach ($portfolios as $portfolio)
         <div class="box">
-            <img src="{{ Storage::disk('public')->url('portfolio/'.$portfolio->portfolio_image) }}" alt="">
+            <img src="{{ asset('uploads/portfolio/'.$portfolio->portfolio_image) }}" alt="">
             <div class="content">
                 <h3>{{ $portfolio->portfolio_title }}</h3>
                 <p>{{ $portfolio->portfolio_sub_title }}</p>

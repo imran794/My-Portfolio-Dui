@@ -16,7 +16,7 @@
             @foreach ($blogs as $blog)
                   <div class="box">
             <div class="image">
-                <img src="{{ Storage::disk('public')->url('blog/'.$blog->blog_image) }}" alt="$blog->blog_image">
+                <img src="{{ asset('uploads/blog/'.$blog->blog_image) }}" alt="$blog->blog_image">
             </div>
             <div class="content">
                 <div class="icons">

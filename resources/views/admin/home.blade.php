@@ -15,28 +15,6 @@
     <!-- Widgets -->
     <div class="row clearfix">
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box bg-pink hover-expand-effect">
-                <div class="icon">
-                    <i class="material-icons">playlist_add_check</i>
-                </div>
-                <div class="content">
-                    <div class="text">TOTAL CATEGORY</div>
-                    <div class="number count-to" data-from="0" data-to="{{ $category }}" data-speed="15" data-fresh-interval="20"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box bg-cyan hover-expand-effect">
-                <div class="icon">
-                    <i class="material-icons">favorite</i>
-                </div>
-                <div class="content">
-                    <div class="text">TOTAL SERVICES</div>
-                    <div class="number count-to" data-from="0" data-to="{{ $servicess }}" data-speed="1000" data-fresh-interval="20"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <div class="info-box bg-light-green hover-expand-effect">
                 <div class="icon">
                     <i class="material-icons">library_books</i>
